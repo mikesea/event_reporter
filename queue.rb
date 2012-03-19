@@ -102,7 +102,7 @@ class Queue
      elsif params[0] == "print"
        params.count == 1 || (params[1] == "by" && params.count == 3 )
      elsif params[0] == "save"
-       params[1] == "to" && param.count == 3
+       params[1] == "to" && params.count == 3
      else
        true
      end

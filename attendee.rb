@@ -52,11 +52,15 @@ class Attendee
   end
 
   def first_name
-    dirty_first_name.capitalize
+    if dirty_first_name
+      dirty_first_name.split.collect{ |n| n.capitalize }.join(" ")
+    end
   end
 
   def last_name
-    dirty_last_name.capitalize
+    if dirty_last_name
+      dirty_last_name.capitalize
+    end
   end
 
   def zipcode
