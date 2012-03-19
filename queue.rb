@@ -1,11 +1,14 @@
 require './command'
 require './search'
-#require './event_reporter_cli'
 require './attendee'
 
-class Queue<Attendee
+class Queue
 
-  attr_accessor :last_name, :first_name, :email_address, :zipcode, :state, :street
+  HEADER = ["LAST NAME", "FIRST NAME", "EMAIL",
+            "ZIPCODE", "CITY", "STATE", "ADDRESS", "PHONE NUMBER"]
+
+  attr_accessor :last_name, :first_name,
+                :email_address, :zipcode, :state, :street
 
   def initialize
     @@queue = []
@@ -38,9 +41,11 @@ class Queue<Attendee
 
   def self.save_to(filename)
     output = CSV.open(filename, "w") do |output|
-      output << ["first_name", "last_name", "email_address", "homephone", "street", "city", "state", "zipcode"]
-      @@queue.each do |record|
-        output << [record.first_name, record.last_name, record.email_address, record.phone_number, record.street, record.city, record.state, record.zipcode]
+      output << ["first_name", "last_name", "email_address",
+                "homephone", "street", "city", "state", "zipcode"]
+      @@queue.each do |r|
+        output << [r.first_name, r.last_name, r.email_address,
+                  r.phone, r.street, r.city, r.state, r.zipcode]
       end
     end
     "I just saved your file."
@@ -54,26 +59,30 @@ class Queue<Attendee
   end
 
   def self.print(queue)
-    puts "LAST NAME \t FIRST NAME \t EMAIL \t ZIPCODE \t CITY \t STATE \t ADDRESS \t PHONE NUMBER"
+    HEADER.each do | h |
+      printf "#{h} \t "
+    end
+    puts ""
+
     queue.each do |record|
-        puts  "#{record.last_name.ljust(max_length("last_name"))}"     + "\t" +
-              "#{record.first_name.ljust(max_length("first_name"))}"    + "\t" +
-              "#{record.email_address.ljust(max_length("email_address"))}" + "\t" +
-              "#{record.zipcode.ljust(max_length("zipcode"))}"       + "\t" +
-              "#{record.city.ljust(max_length("city"))}"          + "\t" +
-              "#{record.state.ljust(max_length("state"))}"         + "\t" +
-              "#{record.street.ljust(max_length("street"))}"        + "\t" +
-              "#{record.phone_number.ljust(max_length("phone_number"))}" 
-    end 
+        puts  "#{record.last_name.ljust(max_length("last_name"))}"          +
+              "#{record.first_name.ljust(max_length("first_name"))}"        +
+              "#{record.email_address.ljust(max_length("email_address"))}"  +
+              "#{record.zipcode.ljust(max_length("zipcode"))}"              +
+              "#{record.city.ljust(max_length("city"))}"                    +
+              "#{record.state.ljust(max_length("state"))}"                  +
+              "#{record.street.ljust(max_length("street"))}"                +
+              "#{record.phone.ljust(max_length("phone"))}"
+    end
     "I just printed #{@@queue.count} records.\n"
   end
 
   def max_length(params)
-    max_atts = @@queue.sort_by { |record| record.send(param.to_sym).max.length }
+    max_atts = @@queue.sort_by { |r| r.send(param.to_sym).max.length }
   end
 
   def self.call(params)
-    "Running Queue sub-function #{params[0]}"    
+    "Running Queue sub-function #{params[0]}"
     command = params[0]
     criteria = ""
     if params.length > 1
@@ -81,21 +90,21 @@ class Queue<Attendee
     end
     case command
       when 'clear'      then clear
-      when 'count'      then count 
+      when 'count'      then count
       when 'print'      then print(sort_by(criteria))
       when 'save'       then save_to(criteria)
     end
   end
 
-  def self.valid_params?(parameters)
-     if !%w(count clear print save).include?(parameters[0])
+  def self.valid_params?(params)
+     if !%w(count clear print save).include?(params[0])
        false
-     elsif parameters[0] == "print" 
-       parameters.count == 1 || (parameters[1] == "by" && parameters.count == 3 )
-     elsif parameters[0] == "save"
-       parameters[1] == "to" && parameters.count == 3
+     elsif params[0] == "print"
+       params.count == 1 || (params[1] == "by" && params.count == 3 )
+     elsif params[0] == "save"
+       params[1] == "to" && param.count == 3
      else
        true
      end
-  end  
+  end
 end

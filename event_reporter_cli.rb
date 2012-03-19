@@ -1,6 +1,4 @@
 require './command'
-require './queue'
-require './search'
 require './event_data_parser'
 
 class EventReporterCLI
@@ -24,7 +22,7 @@ class EventReporterCLI
     results = ""
 
     while results
-      results = execute_command(prompt_user)      
+      results = execute_command(prompt_user)
       puts results if results
     end
 
@@ -46,4 +44,3 @@ class EventReporterCLI
 end
 
 EventReporterCLI.run
-Queue.new

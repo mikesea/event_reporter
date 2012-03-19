@@ -1,16 +1,15 @@
 require 'csv'
-#require 'attendee' 
 require './command'
 require './search'
 
 class EventDataParser
 
-	CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
+  CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
-	def initialize
-		@@attendees = []
+  def initialize
+    @@attendees = []
     @@data = false
-	end
+  end
 
   @@data = false
 
@@ -22,26 +21,26 @@ class EventDataParser
     @@data
   end
 
-	def self.attendees
-  	@@attendees
+  def self.attendees
+    @@attendees
   end
 
   def self.load(parameters)
-  	filename = parameters[0]
-		if filename.nil?
+    filename = parameters[0]
+    if filename.nil?
       filename = "event_attendees.csv"
     end
     file = CSV.open(filename, CSV_OPTIONS)
     load_attendees(file)
   end
 
-  def self.valid_params?(parameters)
-    parameters.count == 0 || ( parameters.count == 1 && parameters[0] =~ /\.csv$/ )
+  def self.valid_params?(params)
+    params.count == 0 || ( params.count == 1 && params[0] =~ /\.csv$/ )
   end
 
   def self.load_attendees(file)
-  	file.rewind
-   	@@attendees = file.collect { |line| Attendee.new(line) }
+    file.rewind
+    @@attendees = file.collect { |line| Attendee.new(line) }
     @@data = true
     "Your data were loaded.\n"
   end

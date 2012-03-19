@@ -6,8 +6,8 @@ end
 
 class PhoneNumber
   def self.clean(dirty_phone_number)
-    @phone_number = dirty_phone_number.scan(/\d/).join.to_s
-    @phone_number = "(#{@phone_number[0..2]}) #{@phone_number[3..5]}-#{@phone_number[6..-1]}"
+    @phone = dirty_phone_number.scan(/\d/).join.to_s
+    @phone = "(#{@phone[0..2]}) #{@phone[3..5]}-#{@phone[6..-1]}"
   end
 
 end
@@ -28,11 +28,13 @@ class City
   def self.clean(dirty_street)
     dirty_street.to_s
   end
-end 
+end
 
 class Attendee
 
-  attr_accessor :dirty_first_name, :dirty_last_name, :dirty_zipcode, :dirty_phone_number, :email_address, :dirty_state, :dirty_city, :dirty_street
+  attr_accessor :dirty_first_name, :dirty_last_name, :dirty_zipcode,
+                :dirty_phone_number, :email_address, :dirty_state,
+                :dirty_city, :dirty_street
 
   def initialize(attributes={})
     self.dirty_first_name       = attributes[:first_name]
@@ -61,7 +63,7 @@ class Attendee
     Zipcode.clean(dirty_zipcode)
   end
 
-  def phone_number
+  def phone
     PhoneNumber.clean(dirty_phone_number)
   end
 
